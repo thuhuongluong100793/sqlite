@@ -107,30 +107,29 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public List<Note> getAllNotes() {
+    public ArrayList<Note> getAllNotes() {
         Log.i(TAG, "MyDatabaseHelper.getAllNotes ... " );
 
-        List<Note> noteList = new ArrayList<Note>();
+        ArrayList<Note> noteList = new ArrayList<Note>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_NOTE;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
+        cursor.moveToFirst();
+        while(cursor.isAfterLast() == false){
+            Note note = new Note();
 
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                Note note = new Note();
-                note.setKey(Integer.parseInt(cursor.getString(0)));
-                note.setTitle(cursor.getString(1));
-                note.setContent(cursor.getString(2));
-                note.setLabel(cursor.getString(3));
-                note.setTime(cursor.getString(4));
-                // Adding note to list
-                noteList.add(note);
-            } while (cursor.moveToNext());
+            note.setKey(Integer.parseInt(cursor.getString(cursor.getColumnIndex(MyDatabaseHelper.COLUMN_NOTE_KEY))));
+            note.setTitle(cursor.getString(cursor.getColumnIndex(MyDatabaseHelper.COLUMN_NOTE_TITLE)));
+            note.setContent(cursor.getString(cursor.getColumnIndex(MyDatabaseHelper.COLUMN_NOTE_CONTENT)));
+            note.setLabel(cursor.getString(cursor.getColumnIndex(MyDatabaseHelper.COLUMN_NOTE_LABEL)));
+            note.setTime(cursor.getString(cursor.getColumnIndex(MyDatabaseHelper.COLUMN_NOTE_TIME)));
+            // Adding note to list
+            noteList.add(note);
+            cursor.moveToNext();
         }
-
+       
         // return note list
         return noteList;
     }
@@ -160,11 +159,11 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_NOTE_TITLE, note.getTitle());
         values.put(COLUMN_NOTE_CONTENT, note.getContent());
         values.put(COLUMN_NOTE_LABEL, note.getLabel());
+
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat;
         dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String currentTime = dateFormat.format(calendar.getTime());
-
         values.put(COLUMN_NOTE_TIME, currentTime.toString());
 
         // updating row

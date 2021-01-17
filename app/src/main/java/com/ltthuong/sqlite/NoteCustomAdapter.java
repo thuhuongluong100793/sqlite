@@ -21,7 +21,7 @@ import java.util.List;
 public class NoteCustomAdapter extends ArrayAdapter<Note> {
     private Context context;
     private int resource;
-    private List<Note> arrNote;
+    private ArrayList<Note> arrNote;
 
     public NoteCustomAdapter(Context context, int resource, ArrayList<Note> arrNote) {
         super(context, resource, arrNote);
@@ -43,58 +43,58 @@ public class NoteCustomAdapter extends ArrayAdapter<Note> {
             viewHolder.tvTime= (TextView) convertView.findViewById(R.id.tvTime);
             viewHolder.btnUpdate = (Button) convertView.findViewById(R.id.btnUpdate);
             viewHolder.btnDelete = (Button) convertView.findViewById(R.id.btnDelete);
-            Note note = arrNote.get(position);
-
-            viewHolder.tvTiTle.setText(note.getTitle());
-            viewHolder.tvContent.setText(note.getContent());
-            viewHolder.tvLabel.setText("(" + note.getLabel() + ")");
-            viewHolder.tvTime.setText(note.getTime());
-
-            viewHolder.btnUpdate.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(view.getContext(), UpdateNoteActivity.class);
-                    intent.putExtra("key", note.getKey() );
-                    intent.putExtra("title", note.getTitle());
-                    intent.putExtra("content", note.getContent());
-                    intent.putExtra("label", note.getLabel());
-
-                    view.getContext().startActivity(intent);
 
 
-                }
-            });
-            viewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
-                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                @Override
-                public void onClick(View view) {
-                    alert.setTitle("Delete entry");
-                    alert.setMessage("Are you sure you want to delete?");
-                    alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // continue with delete
-                            MyDatabaseHelper db = new MyDatabaseHelper(getContext());
-                            db.deleteNote(note);
-                            Toast.makeText(context, "Xóa thành công!", Toast.LENGTH_SHORT).show();
-                            //arrNote.remove(note);
-                        }
-                    });
-                    alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // close dialog
-                            dialog.cancel();
-                        }
-                    });
-                    alert.show();
-                }
-            });
             convertView.setTag(viewHolder);
         }
         else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
+        Note note = arrNote.get(position);
+        viewHolder.tvTiTle.setText(note.getTitle());
+        viewHolder.tvContent.setText(note.getContent());
+        viewHolder.tvLabel.setText("(" + note.getLabel() + ")");
+        viewHolder.tvTime.setText(note.getTime());
 
+        viewHolder.btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), UpdateNoteActivity.class);
+                intent.putExtra("key", note.getKey() );
+                intent.putExtra("title", note.getTitle());
+                intent.putExtra("content", note.getContent());
+                intent.putExtra("label", note.getLabel());
+                view.getContext().startActivity(intent);
+
+
+            }
+        });
+        viewHolder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            @Override
+            public void onClick(View view) {
+                alert.setTitle("Delete entry");
+                alert.setMessage("Are you sure you want to delete?");
+                alert.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+                        MyDatabaseHelper db = new MyDatabaseHelper(getContext());
+                        db.deleteNote(note);
+                        Toast.makeText(context, "Xóa thành công!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getContext(), MainActivity.class);
+                        context.startActivity(intent);
+                    }
+                });
+                alert.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // close dialog
+                        dialog.cancel();
+                    }
+                });
+                alert.show();
+            }
+        });
         return convertView;
     }
 

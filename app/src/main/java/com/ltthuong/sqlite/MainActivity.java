@@ -33,8 +33,10 @@ public class MainActivity extends AppCompatActivity {
         MyDatabaseHelper db = new MyDatabaseHelper(this);
 
         //Show
-        List<Note> list=  db.getAllNotes();
-        this.arrayListNote.addAll(list);
+        ArrayList<Note> list;
+        list =  db.getAllNotes();
+
+        arrayListNote.addAll(list);
         lstView = (ListView) findViewById(R.id.lstView);
         arrayAdapterNote = new NoteCustomAdapter(this, R.layout.layout_one_item_listview, arrayListNote);
         lstView.setAdapter(arrayAdapterNote);
@@ -51,14 +53,17 @@ public class MainActivity extends AppCompatActivity {
                 String title = txtTitle.getText().toString();
                 String content = txtContent.getText().toString();
                 String label = txtLabel.getText().toString();
-
-                Note note = new Note(title, content, label, "time");
-                db.addNote(note);
-                arrayAdapterNote.notifyDataSetChanged();
-                //Show
-                //runOnUiThread(run);
-
-                Toast.makeText(getApplicationContext(), "Thêm thành công!", Toast.LENGTH_SHORT).show();
+                if(!title.equals("") && !content.equals(""))
+                {
+                    Note note = new Note(title, content, label, "time");
+                    db.addNote(note);
+                    reLoad();
+                    Toast.makeText(getApplicationContext(), "Thêm thành công!", Toast.LENGTH_SHORT).show();
+                }
+                Toast.makeText(getApplicationContext(), "Vui lòng nhập thêm thông tin!", Toast.LENGTH_SHORT).show();
+                txtTitle.setText("");
+                txtContent.setText("");
+                txtLabel.setText("");
             }
         });
 
@@ -71,6 +76,16 @@ public class MainActivity extends AppCompatActivity {
                 txtLabel.setText("");
             }
         });
+    }
+
+    public void reLoad()
+    {
+        MyDatabaseHelper db = new MyDatabaseHelper(this);
+        //Show
+        arrayListNote.clear();
+        List<Note> list =  db.getAllNotes();
+        this.arrayListNote.addAll(list);
+        arrayAdapterNote.notifyDataSetChanged();
     }
 
 }

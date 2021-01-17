@@ -2,11 +2,16 @@ package com.ltthuong.sqlite;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UpdateNoteActivity extends AppCompatActivity {
     EditText txtTitle;
@@ -15,6 +20,9 @@ public class UpdateNoteActivity extends AppCompatActivity {
     EditText txtKey;
     Button btnSaveUpdate;
     Button btnBack;
+    public ListView lstView;
+    public NoteCustomAdapter arrayAdapterNote;
+    public ArrayList<Note> arrayListNote = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +52,12 @@ public class UpdateNoteActivity extends AppCompatActivity {
                 Note note = new Note(key, title, content, label, "time");
                 db.updateNote(note);
                 Toast.makeText(getApplicationContext(), "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                //reLoad();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                finish();
+                startActivity(intent);
+
+
             }
         });
         btnBack.setOnClickListener(new View.OnClickListener() {
