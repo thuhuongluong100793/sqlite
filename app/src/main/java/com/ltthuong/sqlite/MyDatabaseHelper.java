@@ -113,13 +113,11 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         ArrayList<Note> noteList = new ArrayList<Note>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_NOTE;
-
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         cursor.moveToFirst();
         while(cursor.isAfterLast() == false){
             Note note = new Note();
-
             note.setKey(Integer.parseInt(cursor.getString(cursor.getColumnIndex(MyDatabaseHelper.COLUMN_NOTE_KEY))));
             note.setTitle(cursor.getString(cursor.getColumnIndex(MyDatabaseHelper.COLUMN_NOTE_TITLE)));
             note.setContent(cursor.getString(cursor.getColumnIndex(MyDatabaseHelper.COLUMN_NOTE_CONTENT)));
@@ -129,7 +127,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             noteList.add(note);
             cursor.moveToNext();
         }
-       
+        cursor.close();
+
         // return note list
         return noteList;
     }
